@@ -1,34 +1,30 @@
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../styles/post.css">
-  <title>Posts</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/main.css">
+    <title>Login Posts</title>
 </head>
 
 <body>
-  <header>
-    <h1>Lista de Posts</h1>
-  </header>
-  <main>
-    <button id="logout-btn">Logout</button>
-    <input type="text" id="search" placeholder="Buscar posts..." />
-    <div id="posts-container"></div>
-
-    <div id="modal" class="modal" style="display:none;">
-      <div class="modal-content">
-        <span id="close-modal" class="close">&times;</span>
-        <h2 id="modal-title"></h2>
-        <p id="modal-body"></p>
-      </div>
-    </div>
-  </main>
-  <footer>
-    <p>© 2025 Dinho</p>
-  </footer>
-
-  <script src="../scripts/posts.js"></script>
+    <header>
+        <h1>Posts</h1>
+        <button onclick="sair()">Sair</button>
+    </header>
+    <main></main>
+    <footer>
+        <input type="text" placeholder="Buscar posts" onkeyup="buscarPosts(this.value)">
+    </footer>
+    <section id="modal" class="modal oculto">
+        <div class="janela">
+            <h2>Detalhes do Post</h2>
+            <div id="post-details"></div>
+            <button onclick="modal.classList.add('oculto')">Fechar</button>
+        </div>
+    </section>
 </body>
+<script src="../scripts/posts.js"></script>
 
 </html>

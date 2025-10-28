@@ -1,6 +1,6 @@
 const url = 'https://dummyjson.com/auth/';
 
-//Redireciona para a página de posts se o token for válido
+// Redireciona automaticamente se já estiver logado
 async function direcionamento() {
     if (await validaToken()) {
         window.location.href = 'posts.html';
@@ -11,57 +11,50 @@ async function direcionamento() {
 
 direcionamento();
 
-//Método para fazer login via API
+// Evento de login
 const forms = document.querySelector('form');
 forms.addEventListener('submit', async (event) => {
     event.preventDefault();
-    const dados = {
-        username: forms.username.value,
-        password: forms.password.value,
-        expiresInMins: 5
+
+    const username = forms.username.value;
+    const password = forms.password.value;
+
+    // Login fixo
+    const usuarioValido = "DinhoSenai@gmail.com";
+    const senhaValida = "123456";
+
+    if (username === usuarioValido && password === senhaValida) {
+        // Cria dados simulados no mesmo formato que o DummyJSON retornaria
+        const data = {
+            id: 1,
+            username: username,
+            accessToken: "token-falso-" + Date.now(),
+            expiresInMins: 5
+        };
+        localStorage.setItem('usuario', JSON.stringify(data));
+        console.log("Login bem-sucedido:", data);
+        window.location.href = "posts.html";
+    } else {
+        alert("Dados de email e senha não conferem");
     }
-    fetch(url + 'login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(dados)
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.accessToken) {
-                console.log('Login bem-sucedido:', data);
-                localStorage.setItem('usuario', JSON.stringify(data));
-                window.location.reload();
-            } else {
-                alert('Credenciais inválidas. Tente novamente.');
-            }
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-        });
 });
 
-//Método para validar o token de acesso
+// Valida o token salvo localmente
 async function validaToken() {
     const usuario = JSON.parse(localStorage.getItem('usuario'));
     let result = false;
-    if (usuario) {
-        const options = {
-            method: 'GET',
-            headers: {
-                Authorization: 'Bearer ' + usuario.accessToken,
-            }
-        };
 
-        await fetch(url + 'me', options)
-            .then(response => response.json())
-            .then(response => {
-                if (response.id) {
-                    result = true;
-                }
-            })
-            .catch(err => console.error(err));
+    if (usuario && usuario.accessToken) {
+        // Simulação: o token expira após 5 minutos
+        const tempoAtual = Date.now();
+        const partes = usuario.accessToken.split("-");
+        const tempoCriacao = parseInt(partes[2] || 0);
+        const expiracao = 5 * 60 * 1000; // 5 minutos
+
+        if (tempoAtual - tempoCriacao < expiracao) {
+            result = true;
+        }
     }
+
     return result;
 }
